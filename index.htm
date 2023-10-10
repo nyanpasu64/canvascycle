@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Canvas Cycle: True 8-bit Color Cycling with HTML5</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Joseph Huckaby">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<!-- Date: 2010-07-17 -->
+	<link rel="stylesheet" type="text/css" href="index_files/style.css">
+
+	<script type="text/javascript" src="index_files/oop.js"></script>
+	<script type="text/javascript" src="index_files/tools.js"></script>
+	<script type="text/javascript" src="index_files/cookie.js"></script>
+	<script type="text/javascript" src="index_files/palette.js"></script>
+	<script type="text/javascript" src="index_files/bitmap.js"></script>
+	<script type="text/javascript" src="index_files/scenes.js"></script>
+	<script type="text/javascript" src="index_files/tween.js"></script>
+	<script type="text/javascript" src="index_files/framecount.js"></script>
+	<script type="text/javascript" src="index_files/main.js"></script>
+
+<script src="index_files/google-analytics_ga.js" async="true"></script><script type="text/javascript" src="index_files/image.php"></script></head>
+<body>
+
+	<div id="container" style="display: block; left: 319px; top: 353px;">
+		<div id="d_header">
+			<div id="d_scene_selector"><select id="fe_scene" onchange="CanvasCycle.switchScene(this)"><option value="V08AM" selected="selected">Jungle Waterfall - Morning</option><option value="V29">Seascape - Day</option><option value="V19">Mountain Stream - Morning</option><option value="V26SNOW">Winter Forest - Snow</option><option value="V08RAIN">Jungle Waterfall - Rain</option><option value="V14">Mountain Storm - Day</option><option value="V30">Deep Forest - Day</option><option value="V04">Highland Ruins - Rain</option><option value="V07">Rough Seas - Day</option><option value="V20">Crystal Caves - Day</option><option value="V05RAIN">Haunted Castle Ruins - Rain</option><option value="V08PM">Jungle Waterfall - Night</option><option value="V16RAIN">Mirror Pond - Rain</option><option value="V19AURA">Mountain Stream - Night</option><option value="CORAL">Aquarius - Day</option><option value="V15">Harbor Town - Night</option><option value="V30RAIN">Deep Forest - Rain</option><option value="V02">Mountain Fortress - Dusk</option><option value="V28">Water City Gates - Fog</option><option value="V29PM">Seascape - Sunset</option><option value="V16">Mirror Pond - Morning</option><option value="V01">Island Fires - Dusk</option><option value="V09">Forest Edge - Day</option><option value="V16PM">Mirror Pond - Afternoon</option><option value="V08">Jungle Waterfall - Afternoon</option><option value="V03">Swamp Cathedral - Day</option><option value="V05HAUNT">Haunted Castle Ruins - Night</option><option value="V10">Deep Swamp - Day</option><option value="V11AM">Approaching Storm - Day</option><option value="V13">Pond Ripples - Dawn</option><option value="V17">Ice Wind - Day</option><option value="V19PM">Mountain Stream - Afternoon</option><option value="V25HEAT">Desert Heat Wave - Day</option><option value="V27">Magic Marsh Cave - Night</option><option value="V29FOG">Seascape - Fog</option></select></div>
+			<div id="d_scene_btns">
+				<div class="button left" onclick="CC.jumpScene(-1)">&lt; Prev</div><div class="button right" onclick="CC.jumpScene(1)">Next &gt;</div>
+			</div>
+			<div id="d_options_control">
+				<div id="btn_options_toggle" class="button left right" onclick="CC.toggleOptions()">Show Options »</div>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div id="d_loading" style="left: 304px; top: 244px; display: none;"></div>
+
+		<canvas id="mycanvas" width="640" height="480" style=""></canvas>
+
+		<div id="d_options" style="display: none;">
+			<div class="label">SOUND:</div>
+			<div class="section">
+				<div id="btn_sound_off" class="button left" onclick="CC.setSound(false)">Off</div><div id="btn_sound_on" class="button right selected" onclick="CC.setSound(true)">On</div>
+			</div>
+
+			<div class="label">ZOOM:</div>
+			<div class="section">
+				<div id="btn_zoom_actual" class="button left selected" onclick="CC.setZoom(false)">Actual</div><div id="btn_zoom_max" class="button right" onclick="CC.setZoom(true)">Max</div>
+			</div>
+
+			<div class="label">CYCLE SPEED:</div>
+			<div class="section">
+				<div id="btn_speed_025" class="button thin left" onclick="CC.setSpeed(0.25)">¼</div><div id="btn_speed_05" class="button thin" onclick="CC.setSpeed(0.5)">½</div><div id="btn_speed_1" class="button thin selected" onclick="CC.setSpeed(1)">1</div><div id="btn_speed_2" class="button thin" onclick="CC.setSpeed(2)">2</div><div id="btn_speed_4" class="button thin right" onclick="CC.setSpeed(4)">4</div>
+			</div>
+
+			<div class="label">CYCLE MODE:</div>
+			<div class="section">
+				<div id="btn_blendshift_off" class="button left" onclick="CC.setBlendShift(false)">Standard</div><div id="btn_blendshift_on" class="button right selected" onclick="CC.setBlendShift(true)">Blend</div>
+			</div>
+
+			<div class="label">PALETTE:</div>
+			<div id="palette_display"><div id="pal_0" class="palette_color"></div><div id="pal_1" class="palette_color"></div><div id="pal_2" class="palette_color"></div><div id="pal_3" class="palette_color"></div><div id="pal_4" class="palette_color"></div><div id="pal_5" class="palette_color"></div><div id="pal_6" class="palette_color"></div><div id="pal_7" class="palette_color"></div><div id="pal_8" class="palette_color"></div><div id="pal_9" class="palette_color"></div><div id="pal_10" class="palette_color"></div><div id="pal_11" class="palette_color"></div><div id="pal_12" class="palette_color"></div><div id="pal_13" class="palette_color"></div><div id="pal_14" class="palette_color"></div><div id="pal_15" class="palette_color"></div><div id="pal_16" class="palette_color"></div><div id="pal_17" class="palette_color"></div><div id="pal_18" class="palette_color"></div><div id="pal_19" class="palette_color"></div><div id="pal_20" class="palette_color"></div><div id="pal_21" class="palette_color"></div><div id="pal_22" class="palette_color"></div><div id="pal_23" class="palette_color"></div><div id="pal_24" class="palette_color"></div><div id="pal_25" class="palette_color"></div><div id="pal_26" class="palette_color"></div><div id="pal_27" class="palette_color"></div><div id="pal_28" class="palette_color"></div><div id="pal_29" class="palette_color"></div><div id="pal_30" class="palette_color"></div><div id="pal_31" class="palette_color"></div><div id="pal_32" class="palette_color"></div><div id="pal_33" class="palette_color"></div><div id="pal_34" class="palette_color"></div><div id="pal_35" class="palette_color"></div><div id="pal_36" class="palette_color"></div><div id="pal_37" class="palette_color"></div><div id="pal_38" class="palette_color"></div><div id="pal_39" class="palette_color"></div><div id="pal_40" class="palette_color"></div><div id="pal_41" class="palette_color"></div><div id="pal_42" class="palette_color"></div><div id="pal_43" class="palette_color"></div><div id="pal_44" class="palette_color"></div><div id="pal_45" class="palette_color"></div><div id="pal_46" class="palette_color"></div><div id="pal_47" class="palette_color"></div><div id="pal_48" class="palette_color"></div><div id="pal_49" class="palette_color"></div><div id="pal_50" class="palette_color"></div><div id="pal_51" class="palette_color"></div><div id="pal_52" class="palette_color"></div><div id="pal_53" class="palette_color"></div><div id="pal_54" class="palette_color"></div><div id="pal_55" class="palette_color"></div><div id="pal_56" class="palette_color"></div><div id="pal_57" class="palette_color"></div><div id="pal_58" class="palette_color"></div><div id="pal_59" class="palette_color"></div><div id="pal_60" class="palette_color"></div><div id="pal_61" class="palette_color"></div><div id="pal_62" class="palette_color"></div><div id="pal_63" class="palette_color"></div><div id="pal_64" class="palette_color"></div><div id="pal_65" class="palette_color"></div><div id="pal_66" class="palette_color"></div><div id="pal_67" class="palette_color"></div><div id="pal_68" class="palette_color"></div><div id="pal_69" class="palette_color"></div><div id="pal_70" class="palette_color"></div><div id="pal_71" class="palette_color"></div><div id="pal_72" class="palette_color"></div><div id="pal_73" class="palette_color"></div><div id="pal_74" class="palette_color"></div><div id="pal_75" class="palette_color"></div><div id="pal_76" class="palette_color"></div><div id="pal_77" class="palette_color"></div><div id="pal_78" class="palette_color"></div><div id="pal_79" class="palette_color"></div><div id="pal_80" class="palette_color"></div><div id="pal_81" class="palette_color"></div><div id="pal_82" class="palette_color"></div><div id="pal_83" class="palette_color"></div><div id="pal_84" class="palette_color"></div><div id="pal_85" class="palette_color"></div><div id="pal_86" class="palette_color"></div><div id="pal_87" class="palette_color"></div><div id="pal_88" class="palette_color"></div><div id="pal_89" class="palette_color"></div><div id="pal_90" class="palette_color"></div><div id="pal_91" class="palette_color"></div><div id="pal_92" class="palette_color"></div><div id="pal_93" class="palette_color"></div><div id="pal_94" class="palette_color"></div><div id="pal_95" class="palette_color"></div><div id="pal_96" class="palette_color"></div><div id="pal_97" class="palette_color"></div><div id="pal_98" class="palette_color"></div><div id="pal_99" class="palette_color"></div><div id="pal_100" class="palette_color"></div><div id="pal_101" class="palette_color"></div><div id="pal_102" class="palette_color"></div><div id="pal_103" class="palette_color"></div><div id="pal_104" class="palette_color"></div><div id="pal_105" class="palette_color"></div><div id="pal_106" class="palette_color"></div><div id="pal_107" class="palette_color"></div><div id="pal_108" class="palette_color"></div><div id="pal_109" class="palette_color"></div><div id="pal_110" class="palette_color"></div><div id="pal_111" class="palette_color"></div><div id="pal_112" class="palette_color"></div><div id="pal_113" class="palette_color"></div><div id="pal_114" class="palette_color"></div><div id="pal_115" class="palette_color"></div><div id="pal_116" class="palette_color"></div><div id="pal_117" class="palette_color"></div><div id="pal_118" class="palette_color"></div><div id="pal_119" class="palette_color"></div><div id="pal_120" class="palette_color"></div><div id="pal_121" class="palette_color"></div><div id="pal_122" class="palette_color"></div><div id="pal_123" class="palette_color"></div><div id="pal_124" class="palette_color"></div><div id="pal_125" class="palette_color"></div><div id="pal_126" class="palette_color"></div><div id="pal_127" class="palette_color"></div><div id="pal_128" class="palette_color"></div><div id="pal_129" class="palette_color"></div><div id="pal_130" class="palette_color"></div><div id="pal_131" class="palette_color"></div><div id="pal_132" class="palette_color"></div><div id="pal_133" class="palette_color"></div><div id="pal_134" class="palette_color"></div><div id="pal_135" class="palette_color"></div><div id="pal_136" class="palette_color"></div><div id="pal_137" class="palette_color"></div><div id="pal_138" class="palette_color"></div><div id="pal_139" class="palette_color"></div><div id="pal_140" class="palette_color"></div><div id="pal_141" class="palette_color"></div><div id="pal_142" class="palette_color"></div><div id="pal_143" class="palette_color"></div><div id="pal_144" class="palette_color"></div><div id="pal_145" class="palette_color"></div><div id="pal_146" class="palette_color"></div><div id="pal_147" class="palette_color"></div><div id="pal_148" class="palette_color"></div><div id="pal_149" class="palette_color"></div><div id="pal_150" class="palette_color"></div><div id="pal_151" class="palette_color"></div><div id="pal_152" class="palette_color"></div><div id="pal_153" class="palette_color"></div><div id="pal_154" class="palette_color"></div><div id="pal_155" class="palette_color"></div><div id="pal_156" class="palette_color"></div><div id="pal_157" class="palette_color"></div><div id="pal_158" class="palette_color"></div><div id="pal_159" class="palette_color"></div><div id="pal_160" class="palette_color"></div><div id="pal_161" class="palette_color"></div><div id="pal_162" class="palette_color"></div><div id="pal_163" class="palette_color"></div><div id="pal_164" class="palette_color"></div><div id="pal_165" class="palette_color"></div><div id="pal_166" class="palette_color"></div><div id="pal_167" class="palette_color"></div><div id="pal_168" class="palette_color"></div><div id="pal_169" class="palette_color"></div><div id="pal_170" class="palette_color"></div><div id="pal_171" class="palette_color"></div><div id="pal_172" class="palette_color"></div><div id="pal_173" class="palette_color"></div><div id="pal_174" class="palette_color"></div><div id="pal_175" class="palette_color"></div><div id="pal_176" class="palette_color"></div><div id="pal_177" class="palette_color"></div><div id="pal_178" class="palette_color"></div><div id="pal_179" class="palette_color"></div><div id="pal_180" class="palette_color"></div><div id="pal_181" class="palette_color"></div><div id="pal_182" class="palette_color"></div><div id="pal_183" class="palette_color"></div><div id="pal_184" class="palette_color"></div><div id="pal_185" class="palette_color"></div><div id="pal_186" class="palette_color"></div><div id="pal_187" class="palette_color"></div><div id="pal_188" class="palette_color"></div><div id="pal_189" class="palette_color"></div><div id="pal_190" class="palette_color"></div><div id="pal_191" class="palette_color"></div><div id="pal_192" class="palette_color"></div><div id="pal_193" class="palette_color"></div><div id="pal_194" class="palette_color"></div><div id="pal_195" class="palette_color"></div><div id="pal_196" class="palette_color"></div><div id="pal_197" class="palette_color"></div><div id="pal_198" class="palette_color"></div><div id="pal_199" class="palette_color"></div><div id="pal_200" class="palette_color"></div><div id="pal_201" class="palette_color"></div><div id="pal_202" class="palette_color"></div><div id="pal_203" class="palette_color"></div><div id="pal_204" class="palette_color"></div><div id="pal_205" class="palette_color"></div><div id="pal_206" class="palette_color"></div><div id="pal_207" class="palette_color"></div><div id="pal_208" class="palette_color"></div><div id="pal_209" class="palette_color"></div><div id="pal_210" class="palette_color"></div><div id="pal_211" class="palette_color"></div><div id="pal_212" class="palette_color"></div><div id="pal_213" class="palette_color"></div><div id="pal_214" class="palette_color"></div><div id="pal_215" class="palette_color"></div><div id="pal_216" class="palette_color"></div><div id="pal_217" class="palette_color"></div><div id="pal_218" class="palette_color"></div><div id="pal_219" class="palette_color"></div><div id="pal_220" class="palette_color"></div><div id="pal_221" class="palette_color"></div><div id="pal_222" class="palette_color"></div><div id="pal_223" class="palette_color"></div><div id="pal_224" class="palette_color"></div><div id="pal_225" class="palette_color"></div><div id="pal_226" class="palette_color"></div><div id="pal_227" class="palette_color"></div><div id="pal_228" class="palette_color"></div><div id="pal_229" class="palette_color"></div><div id="pal_230" class="palette_color"></div><div id="pal_231" class="palette_color"></div><div id="pal_232" class="palette_color"></div><div id="pal_233" class="palette_color"></div><div id="pal_234" class="palette_color"></div><div id="pal_235" class="palette_color"></div><div id="pal_236" class="palette_color"></div><div id="pal_237" class="palette_color"></div><div id="pal_238" class="palette_color"></div><div id="pal_239" class="palette_color"></div><div id="pal_240" class="palette_color"></div><div id="pal_241" class="palette_color"></div><div id="pal_242" class="palette_color"></div><div id="pal_243" class="palette_color"></div><div id="pal_244" class="palette_color"></div><div id="pal_245" class="palette_color"></div><div id="pal_246" class="palette_color"></div><div id="pal_247" class="palette_color"></div><div id="pal_248" class="palette_color"></div><div id="pal_249" class="palette_color"></div><div id="pal_250" class="palette_color"></div><div id="pal_251" class="palette_color"></div><div id="pal_252" class="palette_color"></div><div id="pal_253" class="palette_color"></div><div id="pal_254" class="palette_color"></div><div id="pal_255" class="palette_color"></div><div class="clear"></div></div>
+
+			<div id="d_debug"></div>
+		</div>
+
+		<div class="clear"></div>
+
+	</div>
+
+	<div id="d_footer" title="http://pixfabrik.com/livingworlds/">
+		<div class="close_x" onmouseup="document.querySelector('#d_footer').style.display='none';">×</div>
+		<a href="http://pixfabrik.com/livingworlds/">
+			<div class="app_icon"></div>
+			<div style="margin-top:5px;"><b>Now available on mobile: Living Worlds for iOS and Android!</b></div>
+			<div>See the original versions of Mark Ferrari's worlds in their full glory!</div>
+		</a>
+	</div>
+
+	<script language="JavaScript">
+		if (document.addEventListener) {
+			// Good browsers
+			document.addEventListener( "DOMContentLoaded", function() {
+				document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
+				CC.init();
+			}, false );
+
+			// Just in case
+			window.addEventListener( "load", function() {
+				window.removeEventListener( "load", arguments.callee, false );
+				CC.init();
+			}, false );
+
+			window.addEventListener( "resize", function() {
+				CC.handleResize();
+			}, false );
+		}
+		else if (window.attachEvent) {
+			// Bad browsers have to wait
+			/* window.attachEvent("onload", function() {
+				setTimeout( function() { CC.init(); }, 1000 );
+			});
+
+			window.attachEvent("onresize", function() {
+				CC.handleResize();
+			}); */
+
+			// chrome frame
+			// CFInstall.check({ mode: "overlay" });
+		}
+	</script>
+
+	<script type="text/javascript"> var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-5875241-1']);_gaq.push(['_trackPageview']); (function() {var ga = document.createElement('script');ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';ga.setAttribute('async', 'true');document.documentElement.firstChild.appendChild(ga);})(); </script>
+
+
+
+</body><style id="stylus-262" type="text/css" class="stylus">#hot-network-questions {
+    display: none !important;
+}</style><style id="stylus-300" type="text/css" class="stylus">html {
+    text-decoration-skip-ink: none;
+/*     scrollbar-color: #9af #f0f0f0; */
+}
+* {
+	letter-spacing: 0 !important;
+    hyphens: manual !important;
+}
+/* :root {
+	scrollbar-color: #aaa #f0f0f0;
+} */
+html, body {
+    font-weight: 400 !important;
+/*     font-family: sans-serif; */
+}</style><style id="stylus-400" type="text/css" class="stylus">#container {
+    left: 0px !important;
+    top: 0px !important;
+  }
+  #palette_display {
+    width: 176px;
+    width: calc(11px * 12);
+  }
+  #d_footer {
+    display: none;
+  }
+  #d_header {
+    display: none !important;
+  }</style></html>

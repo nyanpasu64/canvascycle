@@ -98,6 +98,14 @@ var CanvasCycle = {
 
 			this.loadImage( scenes[initialSceneIdx].name );
 			this.sceneIdx = initialSceneIdx;
+
+			// Add keyboard-based navigation.
+			document.addEventListener('keydown', function(event) {
+				if (event.ctrlKey) {
+					if (event.key === 'ArrowRight') CC.jumpScene(1);
+					if (event.key === 'ArrowLeft') CC.jumpScene(-1);
+				}
+			});
 		}
 	},
 

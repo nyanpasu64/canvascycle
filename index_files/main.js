@@ -6,7 +6,7 @@
 FrameCount.visible = false;
 
 var CanvasCycle = {
-	
+
 	cookie: new CookieTree(),
 	ctx: null,
 	imageData: null,
@@ -22,7 +22,7 @@ var CanvasCycle = {
 	sceneIdx: -1,
 	highlightColor: -1,
 	defaultMaxVolume: 0.5,
-	
+
 	settings: {
 		showOptions: false,
 		targetFPS: 60,
@@ -45,10 +45,10 @@ var CanvasCycle = {
 			this.inited = true;
 			$('container').style.display = 'block';
 			$('d_options').style.display = 'none';
-		
+
 			FrameCount.init();
 			this.handleResize();
-		
+
 			var pal_disp = $('palette_display');
 			for (var idx = 0, len = 256; idx < len; idx++) {
 				var div = document.createElement('div');
@@ -62,14 +62,14 @@ var CanvasCycle = {
 			var div = document.createElement('div');
 			div.className = 'clear';
 			pal_disp.appendChild( div );
-		
+
 			// pick starting scene
 			// var initialSceneIdx = Math.floor( Math.random() * scenes.length );
 			var initialSceneIdx = 0;
 			if (location.href.match(/\bscene\=(\d+)/)) {
 				initialSceneIdx = parseInt(RegExp.$1, 10);
 			}
-			
+
 			// populate scene menu
 			var html = '';
 			html += '<select id="fe_scene" onChange="CanvasCycle.switchScene(this)">';
@@ -79,7 +79,7 @@ var CanvasCycle = {
 			}
 			html += '</select>';
 			$('d_scene_selector').innerHTML = html;
-			
+
 			// read prefs from cookie
 			var prefs = this.cookie.get('settings');
 			if (prefs) {
@@ -90,12 +90,12 @@ var CanvasCycle = {
 				this.setBlendShift( prefs.blendShiftEnabled );
 				this.setSound( prefs.sound );
 			}
-			
+
 			// allow query to control sound
 			if (location.href.match(/\bsound\=(\d+)/)) {
 				this.setSound( !!parseInt(RegExp.$1, 10) );
 			}
-		
+
 			this.loadImage( scenes[initialSceneIdx].name );
 			this.sceneIdx = initialSceneIdx;
 		}
@@ -113,18 +113,18 @@ var CanvasCycle = {
 	switchScene: function(menu) {
 		// switch to new scene (grab menu selection)
 		this.stopSceneAudio();
-		
+
 		var name = menu.options[menu.selectedIndex].value;
 		this.sceneIdx = menu.selectedIndex;
-		
+
 		if (ua.mobile) {
 			// no transitions on mobile devices, just switch as fast as possible
 			this.inGame = false;
-			
+
 			this.ctx.clearRect(0, 0, this.bmp.width, this.bmp.height);
 			this.ctx.fillStyle = "rgb(0,0,0)";
 			this.ctx.fillRect (0, 0, this.bmp.width, this.bmp.height);
-			
+
 			CanvasCycle.globalBrightness = 1.0;
 			CanvasCycle.loadImage( name );
 		}
@@ -158,7 +158,7 @@ var CanvasCycle = {
 		scr.src = url;
 		document.getElementsByTagName('HEAD')[0].appendChild(scr);
 	},
-	
+
 	showLoading: function() {
 		// show spinning loading indicator
 		var loading = $('d_loading');
@@ -166,7 +166,7 @@ var CanvasCycle = {
 		loading.style.top = '' + Math.floor( ((this.contentSize.height * this.contentSize.scale) / 2) - 16 ) + 'px';
 		loading.show();
 	},
-	
+
 	hideLoading: function() {
 		// hide spinning loading indicator
 		$('d_loading').hide();
@@ -176,17 +176,17 @@ var CanvasCycle = {
 		// initialize, receive image data from server
 		this.bmp = new Bitmap(img);
 		this.bmp.optimize();
-	
+
 		// $('d_debug').innerHTML = img.filename;
-		
+
 		var canvas = $('mycanvas');
 		if (!canvas.getContext) return; // no canvas support
-	
+
 		if (!this.ctx) this.ctx = canvas.getContext('2d');
 		this.ctx.clearRect(0, 0, this.bmp.width, this.bmp.height);
 		this.ctx.fillStyle = "rgb(0,0,0)";
 		this.ctx.fillRect (0, 0, this.bmp.width, this.bmp.height);
-	
+
 		if (!this.imageData) {
 			if (this.ctx.createImageData) {
 				this.imageData = this.ctx.createImageData( this.bmp.width, this.bmp.height );
@@ -196,7 +196,7 @@ var CanvasCycle = {
 			}
 			else return; // no canvas data support
 		}
-		
+
 		if (ua.mobile) {
 			// no transition on mobile devices
 			this.globalBrightness = 1.0;
@@ -216,10 +216,10 @@ var CanvasCycle = {
 				category: 'scenefade'
 			});
 		}
-		
+
 		this.startSceneAudio();
 	},
-	
+
 	run: function () {
 		// start main loop
 		if (!this.inGame) {
@@ -227,7 +227,7 @@ var CanvasCycle = {
 			this.animate();
 		}
 	},
-	
+
 	stop: function() {
 		// stop main loop
 		this.inGame = false;
@@ -237,18 +237,18 @@ var CanvasCycle = {
 		// animate one frame. and schedule next
 		if (this.inGame) {
 			var colors = this.bmp.palette.colors;
-	
+
 			if (this.settings.showOptions) {
 				for (var idx = 0, len = colors.length; idx < len; idx++) {
 					var clr = colors[idx];
 					var div = $('pal_'+idx);
 					div.style.backgroundColor = 'rgb(' + clr.red + ',' + clr.green + ',' + clr.blue + ')';
 				}
-		
+
 				// if (this.clock % this.settings.targetFPS == 0) $('d_debug').innerHTML = 'FPS: ' + FrameCount.current;
 				$('d_debug').innerHTML = 'FPS: ' + FrameCount.current + ((this.highlightColor != -1) ? (' - Color #' + this.highlightColor) : '');
 			}
-	
+
 			this.bmp.palette.cycle( this.bmp.palette.baseColors, GetTickCount(), this.settings.speedAdjust, this.settings.blendShiftEnabled );
 			if (this.highlightColor > -1) {
 				this.bmp.palette.colors[ this.highlightColor ] = new Color(255, 255, 255);
@@ -260,9 +260,9 @@ var CanvasCycle = {
 			this.bmp.render( this.imageData, (this.lastBrightness == this.globalBrightness) && (this.highlightColor == this.lastHighlightColor) );
 			this.lastBrightness = this.globalBrightness;
 			this.lastHighlightColor = this.highlightColor;
-	
+
 			this.ctx.putImageData( this.imageData, 0, 0 );
-	
+
 			TweenManager.logic( this.clock );
 			this.clock++;
 			FrameCount.count();
@@ -280,23 +280,23 @@ var CanvasCycle = {
 			// scale up to full size
 			var totalNativeWidth = this.contentSize.width + this.contentSize.optionsWidth;
 			var maxScaleX = (this.winSize.width - 30) / totalNativeWidth;
-		
+
 			var totalNativeHeight = this.contentSize.height;
 			var maxScaleY = (this.winSize.height - 30) / totalNativeHeight;
-		
+
 			var maxScale = Math.min( maxScaleX, maxScaleY );
-		
+
 			if (this.contentSize.scale != maxScale) {
 				this.contentSize.scale += ((maxScale - this.contentSize.scale) / 8);
 				if (Math.abs(this.contentSize.scale - maxScale) < 0.001) this.contentSize.scale = maxScale; // close enough
-			
-				var sty = $('mycanvas').style; 
-			
+
+				var sty = $('mycanvas').style;
+
 				if (ua.webkit) sty.webkitTransform = 'translate3d(0px, 0px, 0px) scale('+this.contentSize.scale+')';
 				else if (ua.ff) sty.MozTransform = 'scale('+this.contentSize.scale+')';
 				else if (ua.op) sty.OTransform = 'scale('+this.contentSize.scale+')';
 				else sty.transform = 'scale('+this.contentSize.scale+')';
-				
+
 				sty.marginRight = '' + Math.floor( (this.contentSize.width * this.contentSize.scale) - this.contentSize.width ) + 'px';
 				$('d_header').style.width = '' + Math.floor(this.contentSize.width * this.contentSize.scale) + 'px';
 				this.repositionContainer();
@@ -307,28 +307,28 @@ var CanvasCycle = {
 			if (this.contentSize.scale > 1.0) {
 				this.contentSize.scale += ((1.0 - this.contentSize.scale) / 8);
 				if (this.contentSize.scale < 1.001) this.contentSize.scale = 1.0; // close enough
-			
-				var sty = $('mycanvas').style; 
-			
+
+				var sty = $('mycanvas').style;
+
 				if (ua.webkit) sty.webkitTransform = 'translate3d(0px, 0px, 0px) scale('+this.contentSize.scale+')';
 				else if (ua.ff) sty.MozTransform = 'scale('+this.contentSize.scale+')';
 				else if (ua.op) sty.OTransform = 'scale('+this.contentSize.scale+')';
 				else sty.transform = 'scale('+this.contentSize.scale+')';
-				
+
 				sty.marginRight = '' + Math.floor( (this.contentSize.width * this.contentSize.scale) - this.contentSize.width ) + 'px';
 				$('d_header').style.width = '' + Math.floor(this.contentSize.width * this.contentSize.scale) + 'px';
 				this.repositionContainer();
 			}
 		}
 	},
-	
+
 	repositionContainer: function() {
 		// reposition container element based on inner window size
 		var div = $('container');
 		if (div) {
 			this.winSize = getInnerWindowSize();
 			div.style.left = '' + Math.floor((this.winSize.width / 2) - (((this.contentSize.width * this.contentSize.scale) + this.contentSize.optionsWidth) / 2)) + 'px';
-			div.style.top = '' + Math.floor((this.winSize.height / 2) - ((this.contentSize.height * this.contentSize.scale) / 2)) + 'px';			
+			div.style.top = '' + Math.floor((this.winSize.height / 2) - ((this.contentSize.height * this.contentSize.scale) / 2)) + 'px';
 		}
 	},
 
@@ -337,13 +337,13 @@ var CanvasCycle = {
 		this.repositionContainer();
 		if (this.settings.zoomFull) this.scaleAnimate();
 	},
-	
+
 	saveSettings: function() {
 		// save settings in cookie
 		this.cookie.set( 'settings', this.settings );
 		this.cookie.save();
 	},
-	
+
 	startSceneAudio: function() {
 		// start audio for current scene, if applicable
 		var scene = scenes[ this.sceneIdx ];
@@ -352,14 +352,14 @@ var CanvasCycle = {
 				try { this.audioTrack.pause(); } catch(e) {;}
 			}
 			TweenManager.removeAll({ category: 'audio' });
-			
+
 			var ext = (ua.ff || ua.op) ? 'ogg' : 'mp3';
 			var track = this.audioTrack = new Audio( 'audio/' + scene.sound + '.' + ext );
 			track.volume = 0;
 			track.loop = true;
 			track.autobuffer = false;
 			track.autoplay = true;
-			
+
 			track.addEventListener('canplaythrough', function() {
 				track.play();
 				TweenManager.tween({
@@ -373,18 +373,18 @@ var CanvasCycle = {
 				CanvasCycle.hideLoading();
 				CanvasCycle.run();
 			}, false);
-			
+
 			if (ua.iphone || ua.ipad) {
 				// these may support audio, but just don't invoke events
 				// try to force it
 				setTimeout( function() {
-					track.play(); 
+					track.play();
 					track.volume = 1.0;
 					CanvasCycle.hideLoading();
 					CanvasCycle.run();
 				}, 1000 );
 			}
-			
+
 			if (ua.ff || ua.mobile) {
 				// loop doesn't seem to work on FF or mobile devices, so let's force it
 				track.addEventListener('ended', function() {
@@ -392,7 +392,7 @@ var CanvasCycle = {
 					track.play();
 				}, false);
 			}
-			
+
 			track.load();
 		} // sound enabled and supported
 		else {
@@ -401,13 +401,13 @@ var CanvasCycle = {
 			this.run();
 		}
 	},
-	
+
 	stopSceneAudio: function() {
 		// fade out and stop audio for current scene
 		var scene = scenes[ this.sceneIdx ];
 		if (scene.sound && this.settings.sound && window.Audio && this.audioTrack) {
 			var track = this.audioTrack;
-			
+
 			if (ua.iphone || ua.ipad) {
 				// no transition here, so just stop sound
 				track.pause();
@@ -434,7 +434,7 @@ var CanvasCycle = {
 	toggleOptions: function() {
 		var startValue, endValue;
 		TweenManager.removeAll({ category: 'options' });
-	
+
 		if (!this.settings.showOptions) {
 			startValue = 0;
 			if (this.optTween) startValue = this.optTween.target.value;
@@ -449,7 +449,7 @@ var CanvasCycle = {
 			endValue = 0;
 			$('btn_options_toggle').innerHTML = 'Show Options &#x00BB;';
 		}
-	
+
 		this.optTween = TweenManager.tween({
 			target: { value: startValue },
 			duration: Math.floor( this.settings.targetFPS / 3 ),
@@ -460,7 +460,7 @@ var CanvasCycle = {
 				// $('d_options').style.left = '' + Math.floor(tween.target.value - 150) + 'px';
 				$('d_options').style.opacity = tween.target.value;
 				$('btn_options_toggle').style.left = '' + Math.floor(tween.target.value * 128) + 'px';
-			
+
 				CanvasCycle.contentSize.optionsWidth = Math.floor( tween.target.value * 150 );
 				CanvasCycle.handleResize();
 			},
@@ -470,7 +470,7 @@ var CanvasCycle = {
 			},
 			category: 'options'
 		});
-	
+
 		this.settings.showOptions = !this.settings.showOptions;
 		this.saveSettings();
 	},
@@ -488,7 +488,7 @@ var CanvasCycle = {
 		$('btn_sound_on').setClass('selected', enabled);
 		$('btn_sound_off').setClass('selected', !enabled);
 		this.settings.sound = enabled;
-		
+
 		if (this.sceneIdx > -1) {
 			if (enabled) {
 				// enable sound
@@ -500,7 +500,7 @@ var CanvasCycle = {
 				if (this.audioTrack) this.audioTrack.pause();
 			}
 		}
-		
+
 		this.saveSettings();
 	},
 
@@ -511,7 +511,7 @@ var CanvasCycle = {
 		this.settings.targetFPS = rate;
 		this.saveSettings();
 	},
-	
+
 	setSpeed: function(speed) {
 		$('btn_speed_025').setClass('selected', speed == 0.25);
 		$('btn_speed_05').setClass('selected', speed == 0.5);
@@ -544,20 +544,20 @@ var CC = CanvasCycle; // shortcut
     var vendors = ['ms', 'moz', 'webkit', 'o'];
     for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
         window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
                                    || window[vendors[x]+'CancelRequestAnimationFrame'];
     }
- 
+
     if (!window.requestAnimationFrame)
         window.requestAnimationFrame = function(callback, element) {
             var currTime = new Date().getTime();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
               timeToCall);
             lastTime = currTime + timeToCall;
             return id;
         };
- 
+
     if (!window.cancelAnimationFrame)
         window.cancelAnimationFrame = function(id) {
             clearTimeout(id);

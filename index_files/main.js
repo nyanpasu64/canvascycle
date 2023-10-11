@@ -385,14 +385,6 @@ var CanvasCycle = {
 				}, 1000 );
 			}
 
-			if (ua.ff || ua.mobile) {
-				// loop doesn't seem to work on FF or mobile devices, so let's force it
-				track.addEventListener('ended', function() {
-					track.currentTime = 0;
-					track.play();
-				}, false);
-			}
-
 			track.load();
 		} // sound enabled and supported
 		else {

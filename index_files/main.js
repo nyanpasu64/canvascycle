@@ -151,8 +151,8 @@ var CanvasCycle = {
 		// load image JSON from the server
 		this.stop();
 		this.showLoading();
-		
-		var url = 'image.php?file='+name+'&callback=CanvasCycle.processImage';
+
+		var url = 'images/'+name+".js";
 		var scr = document.createElement('SCRIPT');
 		scr.type = 'text/javascript';
 		scr.src = url;

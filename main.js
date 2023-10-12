@@ -101,10 +101,9 @@ var CanvasCycle = {
 
 			// Add keyboard-based navigation.
 			document.addEventListener('keydown', function(event) {
-				if (event.ctrlKey) {
-					if (event.key === 'ArrowRight') CC.jumpScene(1);
-					if (event.key === 'ArrowLeft') CC.jumpScene(-1);
-				}
+				let k = event.key;
+				if (k === 'ArrowRight' || k === '6') CC.jumpScene(1);
+				if (k === 'ArrowLeft' || k === '4') CC.jumpScene(-1);
 			});
 		}
 	},

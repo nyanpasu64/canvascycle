@@ -23,6 +23,8 @@ var CanvasCycle = {
 	highlightColor: -1,
 	defaultMaxVolume: 0.5,
 
+	sceneTimer: null,
+
 	settings: {
 		showOptions: false,
 		targetFPS: 60,
@@ -104,6 +106,16 @@ var CanvasCycle = {
 				let k = event.key;
 				if (k === 'ArrowRight' || k === '6') CC.jumpScene(1);
 				if (k === 'ArrowLeft' || k === '4') CC.jumpScene(-1);
+
+				if (k === " ") {
+					if (CC.sceneTimer) {
+						clearInterval(CC.sceneTimer);
+						CC.sceneTimer = null;
+					} else {
+						CC.jumpScene(0);
+						CC.sceneTimer = setInterval(() => CC.jumpScene(1), 60 * 1000);
+					}
+				}
 			});
 		}
 	},

@@ -101,11 +101,22 @@ var CanvasCycle = {
 			this.loadImage( scenes[initialSceneIdx].name );
 			this.sceneIdx = initialSceneIdx;
 
+			let resetTimer = () => {
+				clearInterval(CC.sceneTimer);
+				CC.sceneTimer = setInterval(() => CC.jumpScene(1), 60 * 1000);
+			};
+
 			// Add keyboard-based navigation.
 			document.addEventListener('keydown', function(event) {
 				let k = event.key;
-				if (k === 'ArrowRight' || k === '6') CC.jumpScene(1);
-				if (k === 'ArrowLeft' || k === '4') CC.jumpScene(-1);
+				if (k === 'ArrowRight' || k === '6') {
+					CC.jumpScene(1);
+					resetTimer();
+				}
+				if (k === 'ArrowLeft' || k === '4') {
+					CC.jumpScene(-1);
+					resetTimer();
+				}
 
 				if (k === " ") {
 					if (CC.sceneTimer) {
